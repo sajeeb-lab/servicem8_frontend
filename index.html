@@ -277,22 +277,32 @@
     termsText.style.display = "none";
   }
 
+  /* ======== ONLY CHANGE IS HERE ======== */
   function typedSignatureToBase64(text) {
-    const tempCanvas = document.createElement("canvas");
-    tempCanvas.width = typeBox.clientWidth;
-    tempCanvas.height = 120;
-    const tctx = tempCanvas.getContext("2d");
+    const scale = 4; // High-resolution source for ServiceM8 preview
 
-    tctx.fillStyle = "#fafafa";
-    tctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+    const width = typeBox.clientWidth;
+    const height = 120;
+
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = width * scale;
+    tempCanvas.height = height * scale;
+
+    const tctx = tempCanvas.getContext("2d");
+    tctx.scale(scale, scale);
+    tctx.imageSmoothingEnabled = true;
+    tctx.imageSmoothingQuality = "high";
+
+    tctx.clearRect(0, 0, width, height);
     tctx.font = "38px 'Pacifico', cursive";
-    tctx.fillStyle = "#555";
+    tctx.fillStyle = "#000";
     tctx.textAlign = "center";
     tctx.textBaseline = "middle";
-    tctx.fillText(text, tempCanvas.width / 2, tempCanvas.height / 2);
+    tctx.fillText(text, width / 2, height / 2);
 
     return tempCanvas.toDataURL("image/png");
   }
+  /* ======== END CHANGE ======== */
 
   checkbox.addEventListener("change", () => {
     if (checkbox.checked) {
