@@ -211,24 +211,10 @@
   const checkbox = document.getElementById("acceptTermsCheckbox");
   const checkboxError = document.getElementById("checkboxError");
 
-  const DPR = window.devicePixelRatio || 1;
-
   function resizeCanvas() {
-    const width = typeBox.clientWidth;
-    const height = 120;
-
-    canvas.style.width = width + "px";
-    canvas.style.height = height + "px";
-
-    canvas.width = width * DPR;
-    canvas.height = height * DPR;
-
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.scale(DPR, DPR);
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
+    canvas.width = typeBox.clientWidth;
+    canvas.height = 120;
   }
-
   resizeCanvas();
 
   switchBtn.onclick = () => {
@@ -236,7 +222,6 @@
     if (drawMode) {
       typeBox.style.display = "none";
       canvas.style.display = "block";
-      resizeCanvas();
       switchBtn.textContent = "Switch to typed signature";
     } else {
       canvas.style.display = "none";
@@ -250,6 +235,8 @@
   canvas.addEventListener("mousedown", e => {
     drawing = true;
     ctx.beginPath();
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
     ctx.moveTo(e.offsetX, e.offsetY);
   });
 
@@ -284,37 +271,36 @@
     }
   }
 
-  if (!docId) loadTerms();
-  else termsText.style.display = "none";
+  if (!docId) {
+    loadTerms();
+  } else {
+    termsText.style.display = "none";
+  }
 
   function typedSignatureToBase64(text) {
-    const width = typeBox.clientWidth;
-    const height = 120;
-
     const tempCanvas = document.createElement("canvas");
-    tempCanvas.width = width * DPR;
-    tempCanvas.height = height * DPR;
-
+    tempCanvas.width = typeBox.clientWidth;
+    tempCanvas.height = 120;
     const tctx = tempCanvas.getContext("2d");
-    tctx.scale(DPR, DPR);
 
     tctx.fillStyle = "#fafafa";
-    tctx.fillRect(0, 0, width, height);
-
+    tctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
     tctx.font = "38px 'Pacifico', cursive";
     tctx.fillStyle = "#555";
     tctx.textAlign = "center";
     tctx.textBaseline = "middle";
-    tctx.fillText(text, width / 2, height / 2);
+    tctx.fillText(text, tempCanvas.width / 2, tempCanvas.height / 2);
 
     return tempCanvas.toDataURL("image/png");
   }
 
   checkbox.addEventListener("change", () => {
-    if (checkbox.checked) checkboxError.style.display = "none";
+    if (checkbox.checked) {
+      checkboxError.style.display = "none";
+    }
   });
 
-  acceptBtn.onclick = async () => {
+  document.getElementById("acceptBtn").onclick = async () => {
     if (!checkbox.checked) {
       checkboxError.style.display = "block";
       return;
@@ -364,8 +350,8 @@
           <p>Your signature has been successfully recorded.</p>
         </div>
       `;
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
     }
   };
 </script>
