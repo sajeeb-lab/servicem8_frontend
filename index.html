@@ -334,14 +334,11 @@
           body: JSON.stringify({ docId, jobUUID, signatureBase64 })
         });
       } else {
-        const message = clientName
-          ? `${clientName} signature was captured.`
-          : "Customer signature was captured.";
-
+        const termsNote = termsText.innerText.trim();
         await fetch("https://note-fixed-final.vercel.app/api/signature", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ jobUUID, note: message })
+          body: JSON.stringify({ jobUUID, note: termsNote })
         });
 
         await fetch(
