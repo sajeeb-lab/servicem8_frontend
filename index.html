@@ -279,13 +279,19 @@
 
   /* ======== ONLY CHANGE IS HERE ======== */
   function typedSignatureToBase64(text) {
-    const scale = 4; // High-resolution source for ServiceM8 preview
-
-    const width = typeBox.clientWidth;
+    const scale = 4;
+    const padding = 24;
     const height = 120;
 
+    const measureCanvas = document.createElement("canvas");
+    const measureCtx = measureCanvas.getContext("2d");
+    measureCtx.font = "38px 'Pacifico', cursive";
+
+    const textWidth = measureCtx.measureText(text).width;
+    const logicalWidth = Math.ceil(textWidth + padding * 2);
+
     const tempCanvas = document.createElement("canvas");
-    tempCanvas.width = width * scale;
+    tempCanvas.width = logicalWidth * scale;
     tempCanvas.height = height * scale;
 
     const tctx = tempCanvas.getContext("2d");
@@ -293,12 +299,12 @@
     tctx.imageSmoothingEnabled = true;
     tctx.imageSmoothingQuality = "high";
 
-    tctx.clearRect(0, 0, width, height);
+    tctx.clearRect(0, 0, logicalWidth, height);
     tctx.font = "38px 'Pacifico', cursive";
     tctx.fillStyle = "#000";
-    tctx.textAlign = "center";
+    tctx.textAlign = "left";
     tctx.textBaseline = "middle";
-    tctx.fillText(text, width / 2, height / 2);
+    tctx.fillText(text, padding, height / 2);
 
     return tempCanvas.toDataURL("image/png");
   }
