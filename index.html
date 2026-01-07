@@ -257,7 +257,17 @@
   const jobUUID = getQueryParam("jobUUID");
   const docId = getQueryParam("docId");
 
-  if (clientName) textBox.value = clientName;
+  if (clientName) {
+    textBox.value = clientName.trim().split(" ")[0];
+  }
+
+  textBox.addEventListener("input", () => {
+    const value = textBox.value.trim();
+    if (value.includes(" ")) {
+      alert("Please enter only your first name.");
+      textBox.value = value.split(" ")[0];
+    }
+  });
 
   async function loadTerms() {
     try {
@@ -277,7 +287,6 @@
     termsText.style.display = "none";
   }
 
-  /* ======== ONLY CHANGE IS HERE ======== */
   function typedSignatureToBase64(text) {
     const scale = 4;
     const padding = 24;
@@ -308,7 +317,6 @@
 
     return tempCanvas.toDataURL("image/png");
   }
-  /* ======== END CHANGE ======== */
 
   checkbox.addEventListener("change", () => {
     if (checkbox.checked) {
