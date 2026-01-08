@@ -165,6 +165,12 @@
       color: #444;
     }
 
+    .error-box {
+      color: #d93025;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
     @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
   </style>
 </head>
@@ -175,6 +181,8 @@
   <h2>Confirm Your Acceptance</h2>
 
   <div id="termsText" class="terms-text"></div>
+
+  <div id="apiError" class="error-box" style="display:none;"></div>
 
   <label class="label-text">Please sign your name:</label>
 
@@ -222,6 +230,13 @@
   const checkbox = document.getElementById("acceptTermsCheckbox");
   const checkboxError = document.getElementById("checkboxError");
   const nameError = document.getElementById("nameError");
+  const apiError = document.getElementById("apiError");
+
+  let jobUUID = null;
+  let docId = null;
+  let clientName = null;
+  let termsContent = null;
+  let signatureStatus = null;
 
   function resizeCanvas() {
     canvas.width = typeBox.clientWidth;
@@ -261,17 +276,50 @@
   canvas.addEventListener("mouseup", () => drawing = false);
   canvas.addEventListener("mouseout", () => drawing = false);
 
-  function getQueryParam(param) {
-    return new URLSearchParams(window.location.search).get(param);
+  function getKeyFromURL() {
+    return new URLSearchParams(window.location.search).get("k");
   }
 
-  const clientName = getQueryParam("client");
-  const jobUUID = getQueryParam("jobUUID");
-  const docId = getQueryParam("docId");
+  async function loadInitialData() {
+    const key = getKeyFromURL();
 
-  if (clientName) {
-    textBox.value = clientName.trim().split(" ")[0];
+    if (!key) {
+      apiError.style.display = "block";
+      apiError.innerText = "Invalid or missing access key.";
+      acceptBtn.disabled = true;
+      return;
+    }
+
+    try {
+      const res = await fetch(`https://database-psi-eight.vercel.app/api/get-result?k=${key}`);
+      const data = await res.json();
+
+      if (!data || !data.jobUUID || !data.clientName) {
+        throw new Error("Invalid response");
+      }
+
+      jobUUID = data.jobUUID;
+      docId = data.docId;
+      clientName = data.clientName;
+      termsContent = data.termsText || "";
+      signatureStatus = data.signatureStatus || null;
+
+      textBox.value = clientName.trim().split(" ")[0];
+
+      if (!docId) {
+        termsText.innerText = termsContent;
+      } else {
+        termsText.style.display = "none";
+      }
+
+    } catch (e) {
+      apiError.style.display = "block";
+      apiError.innerText = "Failed to load required data. Please try again later.";
+      acceptBtn.disabled = true;
+    }
   }
+
+  loadInitialData();
 
   textBox.addEventListener("input", () => {
     const value = textBox.value.trim();
@@ -283,24 +331,6 @@
       nameError.style.display = "none";
     }
   });
-
-  async function loadTerms() {
-    try {
-      const res = await fetch(
-        `https://database-psi-eight.vercel.app/api/get-terms?jobUUID=${jobUUID}`
-      );
-      const data = await res.json();
-      termsText.innerText = data.termsText || "";
-    } catch {
-      termsText.innerText = "";
-    }
-  }
-
-  if (!docId) {
-    loadTerms();
-  } else {
-    termsText.style.display = "none";
-  }
 
   function typedSignatureToBase64(text) {
     const scale = 4;
@@ -387,7 +417,10 @@
         </div>
       `;
     } catch (error) {
-      console.error(error);
+      apiError.style.display = "block";
+      apiError.innerText = "Signature submission failed. Please try again.";
+      acceptBtn.disabled = false;
+      btnText.innerText = "Complete Signature";
     }
   };
 </script>
