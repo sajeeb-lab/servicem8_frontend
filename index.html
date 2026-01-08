@@ -184,7 +184,7 @@
 
   <div id="apiError" class="error-box" style="display:none;"></div>
 
-  <label class="label-text" id="signLabel">Please sign your name:</label>
+  <label class="label-text">Please sign your name:</label>
 
   <div class="signature-box" id="typeModeBox">
     <textarea id="signatureText" placeholder="your name"></textarea>
@@ -198,7 +198,7 @@
 
   <div class="switch-mode" id="switchMode">Switch to draw signature</div>
 
-  <p class="small-note" id="checkboxRow">
+  <p class="small-note">
     <input type="checkbox" id="acceptTermsCheckbox" />
     I understand and agree to this being an electronic representation of my signature.
   </p>
@@ -207,7 +207,7 @@
     Please confirm by checking this box before continuing.
   </div>
 
-  <div class="btn-row" id="btnRow">
+  <div class="btn-row">
     <button class="cancel-btn">Cancel</button>
     <button class="accept-btn" id="acceptBtn">
       <span id="btnText">Complete Signature</span>
@@ -231,16 +231,12 @@
   const checkboxError = document.getElementById("checkboxError");
   const nameError = document.getElementById("nameError");
   const apiError = document.getElementById("apiError");
-  const btnRow = document.getElementById("btnRow");
-  const checkboxRow = document.getElementById("checkboxRow");
-  const signLabel = document.getElementById("signLabel");
 
   let jobUUID = null;
   let docId = null;
   let clientName = null;
   let termsContent = null;
   let signatureStatus = null;
-  let linkKey = null;
 
   function resizeCanvas() {
     canvas.width = typeBox.clientWidth;
@@ -285,9 +281,9 @@
   }
 
   async function loadInitialData() {
-    linkKey = getKeyFromURL();
+    const key = getKeyFromURL();
 
-    if (!linkKey) {
+    if (!key) {
       apiError.style.display = "block";
       apiError.innerText = "Invalid or missing access key.";
       acceptBtn.disabled = true;
@@ -295,7 +291,7 @@
     }
 
     try {
-      const res = await fetch(`https://database-psi-eight.vercel.app/api/get-result?k=${linkKey}`);
+      const res = await fetch(`https://database-psi-eight.vercel.app/api/get-result?k=${key}`);
       const data = await res.json();
 
       if (!data || !data.jobUUID || !data.clientName) {
@@ -307,19 +303,6 @@
       clientName = data.clientName;
       termsContent = data.termsText || "";
       signatureStatus = data.signatureStatus || null;
-
-      if (signatureStatus === "done") {
-        modal.innerHTML = `
-          <div class="success-box">
-            <h2>Signature Already Captured</h2>
-            <p>
-              Signature has already been captured.<br/>
-              If you believe this is an error, please contact us.
-            </p>
-          </div>
-        `;
-        return;
-      }
 
       textBox.value = clientName.trim().split(" ")[0];
 
@@ -426,12 +409,6 @@
           }
         );
       }
-
-      await fetch("https://database-psi-eight.vercel.app/api/updateSignStatus", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ linkKey })
-      });
 
       modal.innerHTML = `
         <div class="success-box">
