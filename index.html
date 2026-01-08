@@ -422,7 +422,7 @@
 
       const key = getKeyFromURL();
       if (key) {
-        await fetch("https://database-psi-eight.vercel.app/api/updateSignStatus", {
+        await fetch("https://database-psi-eight.vercel.app/api/get-terms", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ linkKey: key })
