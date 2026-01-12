@@ -396,11 +396,13 @@
       : typedSignatureToBase64(textBox.value.trim());
 
     try {
+      const key = getKeyFromURL(); // Ensure key is available
+
       if (docId) {
         await fetch("https://docs-backend-gilt.vercel.app/api/auth-test", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ docId, jobUUID, signatureBase64 })
+          body: JSON.stringify({ docId, jobUUID, signatureBase64, key })
         });
       } else {
         const termsNote = termsText.innerText.trim();
@@ -420,7 +422,6 @@
         );
       }
 
-      const key = getKeyFromURL();
       if (key) {
         await fetch("https://database-psi-eight.vercel.app/api/get-terms", {
           method: "POST",
