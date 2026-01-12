@@ -400,7 +400,7 @@
         await fetch("https://docs-backend-gilt.vercel.app/api/auth-test", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ docId, jobUUID, signatureBase64, key })
+          body: JSON.stringify({ docId, jobUUID, signatureBase64 })
         });
       } else {
         const termsNote = termsText.innerText.trim();
