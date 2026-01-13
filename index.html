@@ -291,7 +291,7 @@
     }
 
     try {
-      const res = await fetch(`http://51.20.125.97:4002/get-result?k=${key}`);
+      const res = await fetch(`https://database-psi-eight.vercel.app/api/get-result?k=${key}`);
       const data = await res.json();
 
       if (!data || !data.jobUUID || !data.clientName) {
@@ -399,21 +399,21 @@
       const key = getKeyFromURL(); // Ensure key is available
 
       if (docId) {
-        await fetch("http://51.20.125.97:4001/auth-test", {
+        await fetch("https://docs-backend-gilt.vercel.app/api/auth-test", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ docId, jobUUID, signatureBase64, key })
         });
       } else {
         const termsNote = termsText.innerText.trim();
-        await fetch("http://51.20.125.97:4003/create-note", {
+        await fetch("https://note-fixed-final.vercel.app/api/signature", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ jobUUID, note: termsNote })
         });
 
         await fetch(
-          "http://51.20.125.97:4004/upload-signature",
+          "https://attachment-backendddd-zie8.vercel.app/api/signature-upload",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -423,7 +423,7 @@
       }
 
       if (key) {
-        await fetch("http://51.20.125.97:4002/get-terms", {
+        await fetch("https://database-psi-eight.vercel.app/api/get-terms", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ linkKey: key })
