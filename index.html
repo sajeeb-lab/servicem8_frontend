@@ -251,12 +251,33 @@
   });
 
   // render the typed name to a PNG, only after the font is ready
+  // Wait until the Pacifico webfont is genuinely loaded before drawing the
+  // signature. If we draw too early, the canvas falls back to a heavier system
+  // cursive font and the saved signature looks bold. Polling document.fonts
+  // (and re-triggering the load) handles the case where the stylesheet hasn't
+  // registered the font yet.
+  function whenPacificoReady(timeoutMs) {
+    return new Promise(function (resolve) {
+      var start = Date.now();
+      (function tick() {
+        try {
+          if (document.fonts && document.fonts.check('normal 400 38px "Pacifico"')) return resolve(true);
+          if (document.fonts && document.fonts.load) document.fonts.load('normal 400 38px "Pacifico"');
+        } catch (e) {}
+        if (Date.now() - start > (timeoutMs || 4000)) return resolve(false);
+        setTimeout(tick, 150);
+      })();
+    });
+  }
+  whenPacificoReady(4000); // start loading immediately on page load
+
   async function typedSignatureToBase64(text) {
-    try { await document.fonts.load("38px 'Pacifico'"); await document.fonts.ready; } catch (e) {}
+    await whenPacificoReady(4000);
 
     const scale = 4, padding = 24, height = 120;
+    const font = 'normal 400 38px "Pacifico", cursive';
     const measure = document.createElement("canvas").getContext("2d");
-    measure.font = "38px 'Pacifico', cursive";
+    measure.font = font;
     const textWidth = measure.measureText(text).width;
     const logicalWidth = Math.ceil(textWidth + padding * 2);
 
@@ -268,7 +289,7 @@
     t.imageSmoothingEnabled = true;
     t.imageSmoothingQuality = "high";
     t.clearRect(0, 0, logicalWidth, height);
-    t.font = "38px 'Pacifico', cursive";
+    t.font = font;
     t.fillStyle = "#000";
     t.textAlign = "left";
     t.textBaseline = "middle";
