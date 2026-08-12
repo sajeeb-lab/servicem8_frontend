@@ -1,177 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Confirm Signature</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap">
   <style>
     body {
       font-family: Arial, sans-serif;
       background: rgba(0,0,0,0.4);
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0;
+      padding: 16px;
+      box-sizing: border-box;
     }
-
     .modal {
       background: white;
       width: 650px;
+      max-width: 100%;
       border-radius: 10px;
       padding: 25px;
       box-shadow: 0 5px 25px rgba(0,0,0,0.3);
       text-align: left;
+      box-sizing: border-box;
     }
-
-    h2 {
-      margin-top: 0;
-      font-size: 20px;
-    }
-
-    .terms-text {
-      margin-top: 12px;
-      font-size: 13px;
-      line-height: 1.6;
-      color: #333;
-    }
-
-    .label-text {
-      font-size: 15px;
-      margin-bottom: 8px;
-      display: block;
-      margin-top: 15px;
-    }
-
+    h2 { margin-top: 0; font-size: 20px; }
+    .terms-text { margin-top: 12px; font-size: 13px; line-height: 1.6; color: #333; white-space: pre-wrap; max-height: 260px; overflow:auto; }
+    .label-text { font-size: 15px; margin-bottom: 8px; display: block; margin-top: 15px; }
     .signature-box {
-      border: 2px solid #ccc;
-      border-radius: 6px;
-      width: 100%;
-      height: 120px;
-      background: #fafafa;
-      cursor: text;
-      padding: 10px;
-      overflow: hidden;
-      position: relative;
+      border: 2px solid #ccc; border-radius: 6px; width: 100%; height: 120px;
+      background: #fafafa; cursor: text; padding: 10px; overflow: hidden;
+      position: relative; box-sizing: border-box;
     }
-
     #signatureText {
-      width: 100%;
-      height: 100%;
-      border: none;
-      outline: none;
-      resize: none;
-      font-size: 38px;
-      font-family: "Pacifico", cursive;
-      color: #555;
-      background: transparent;
+      width: 100%; height: 100%; border: none; outline: none; resize: none;
+      font-size: 38px; font-family: "Pacifico", cursive; color: #555; background: transparent;
     }
-
     #drawCanvas {
-      width: 100%;
-      height: 120px;
-      display: none;
-      border: 2px solid #ccc;
-      border-radius: 6px;
-      background: #fafafa;
+      width: 100%; height: 120px; display: none; border: 2px solid #ccc;
+      border-radius: 6px; background: #fafafa; box-sizing: border-box; touch-action: none;
     }
-
-    .small-note {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #444;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      white-space: nowrap;
-    }
-
-    .checkbox-error {
-      margin-top: 6px;
-      font-size: 12px;
-      color: #d93025;
-      display: none;
-    }
-
-    .name-error {
-      margin-top: 6px;
-      font-size: 12px;
-      color: #d93025;
-      display: none;
-    }
-
-    .btn-row {
-      margin-top: 20px;
-      text-align: right;
-    }
-
+    .small-note { margin-top: 10px; font-size: 13px; color: #444; display: flex; align-items: center; gap: 6px; }
+    .checkbox-error, .name-error { margin-top: 6px; font-size: 12px; color: #d93025; display: none; }
+    .btn-row { margin-top: 20px; text-align: right; }
     button {
-      padding: 8px 16px;
-      font-size: 15px;
-      border-radius: 6px;
-      cursor: pointer;
-      border: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      padding: 8px 16px; font-size: 15px; border-radius: 6px; cursor: pointer;
+      border: none; display: inline-flex; align-items: center; gap: 8px;
     }
-
-    .cancel-btn {
-      background: #e0e0e0;
-      margin-right: 10px;
-    }
-
-    .accept-btn {
-      background: #64c832;
-      color: white;
-    }
-
-    .accept-btn:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
-
-    .switch-mode {
-      font-size: 13px;
-      margin-top: 6px;
-      cursor: pointer;
-      color: #0073ff;
-      text-decoration: underline;
-    }
-
-    .spinner {
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255,255,255,0.5);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .success-box {
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    .success-box h2 {
-      color: #64c832;
-      margin-bottom: 10px;
-    }
-
-    .success-box p {
-      font-size: 15px;
-      color: #444;
-    }
-
-    .error-box {
-      color: #d93025;
-      font-size: 13px;
-      margin-top: 10px;
-    }
-
-    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+    .cancel-btn { background: #e0e0e0; margin-right: 10px; }
+    .accept-btn { background: #64c832; color: white; }
+    .accept-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+    .switch-mode { font-size: 13px; margin-top: 6px; cursor: pointer; color: #0073ff; text-decoration: underline; display:inline-block; }
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.5); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .success-box { text-align: center; padding: 40px 20px; }
+    .success-box h2 { color: #64c832; margin-bottom: 10px; }
+    .success-box p { font-size: 15px; color: #444; }
+    .error-box { color: #d93025; font-size: 13px; margin-top: 10px; }
   </style>
 </head>
 
@@ -190,9 +79,7 @@
     <textarea id="signatureText" placeholder="your name"></textarea>
   </div>
 
-  <div class="name-error" id="nameError">
-    Please enter only your first name.
-  </div>
+  <div class="name-error" id="nameError">Please enter only your first name.</div>
 
   <canvas id="drawCanvas"></canvas>
 
@@ -203,19 +90,19 @@
     I understand and agree to this being an electronic representation of my signature.
   </p>
 
-  <div class="checkbox-error" id="checkboxError">
-    Please confirm by checking this box before continuing.
-  </div>
+  <div class="checkbox-error" id="checkboxError">Please confirm by checking this box before continuing.</div>
 
   <div class="btn-row">
-    <button class="cancel-btn">Cancel</button>
-    <button class="accept-btn" id="acceptBtn">
-      <span id="btnText">Complete Signature</span>
-    </button>
+    <button class="cancel-btn" id="cancelBtn">Cancel</button>
+    <button class="accept-btn" id="acceptBtn"><span id="btnText">Complete Signature</span></button>
   </div>
 </div>
 
 <script>
+  // ---- Backend base ----
+  const API_BASE = "https://signature-backend-one.vercel.app";
+  // ----------------------
+
   let drawMode = false;
 
   const switchBtn = document.getElementById("switchMode");
@@ -231,18 +118,59 @@
   const checkboxError = document.getElementById("checkboxError");
   const nameError = document.getElementById("nameError");
   const apiError = document.getElementById("apiError");
+  const cancelBtn = document.getElementById("cancelBtn");
 
-  let jobUUID = null;
-  let docId = null;
+  let sessionType = null;   // "terms" | "doc"
   let clientName = null;
-  let termsContent = null;
-  let signatureStatus = null;
+  let hasDrawn = false;
 
-  function resizeCanvas() {
-    canvas.width = typeBox.clientWidth;
-    canvas.height = 120;
+  function getKeyFromURL() {
+    return new URLSearchParams(window.location.search).get("k");
   }
-  resizeCanvas();
+
+  // ---- signature pad: crisp + mouse & touch ----
+  function resizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    const w = rect.width || typeBox.clientWidth || 400;
+    const h = 120;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "#000";
+  }
+
+  function pointerPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const p = e.touches ? e.touches[0] : e;
+    return { x: p.clientX - rect.left, y: p.clientY - rect.top };
+  }
+
+  let drawing = false;
+  function startDraw(e) {
+    drawing = true; hasDrawn = true;
+    const { x, y } = pointerPos(e);
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    if (e.cancelable) e.preventDefault();
+  }
+  function moveDraw(e) {
+    if (!drawing) return;
+    const { x, y } = pointerPos(e);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    if (e.cancelable) e.preventDefault();
+  }
+  function endDraw() { drawing = false; }
+
+  canvas.addEventListener("mousedown", startDraw);
+  canvas.addEventListener("mousemove", moveDraw);
+  window.addEventListener("mouseup", endDraw);
+  canvas.addEventListener("touchstart", startDraw, { passive: false });
+  canvas.addEventListener("touchmove", moveDraw, { passive: false });
+  canvas.addEventListener("touchend", endDraw);
 
   switchBtn.onclick = () => {
     drawMode = !drawMode;
@@ -250,6 +178,7 @@
       typeBox.style.display = "none";
       canvas.style.display = "block";
       switchBtn.textContent = "Switch to typed signature";
+      resizeCanvas(); // size it now that it's visible
     } else {
       canvas.style.display = "none";
       typeBox.style.display = "block";
@@ -257,32 +186,11 @@
     }
   };
 
-  let drawing = false;
+  window.addEventListener("resize", () => { if (drawMode) resizeCanvas(); });
 
-  canvas.addEventListener("mousedown", e => {
-    drawing = true;
-    ctx.beginPath();
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    ctx.moveTo(e.offsetX, e.offsetY);
-  });
-
-  canvas.addEventListener("mousemove", e => {
-    if (!drawing) return;
-    ctx.lineTo(e.offsetX, e.offsetY);
-    ctx.stroke();
-  });
-
-  canvas.addEventListener("mouseup", () => drawing = false);
-  canvas.addEventListener("mouseout", () => drawing = false);
-
-  function getKeyFromURL() {
-    return new URLSearchParams(window.location.search).get("k");
-  }
-
+  // ---- load session ----
   async function loadInitialData() {
     const key = getKeyFromURL();
-
     if (!key) {
       apiError.style.display = "block";
       apiError.innerText = "Invalid or missing access key.";
@@ -291,37 +199,29 @@
     }
 
     try {
-      const res = await fetch(`https://database-psi-eight.vercel.app/api/get-result?k=${key}`);
+      const res = await fetch(`${API_BASE}/api/get-session?k=${encodeURIComponent(key)}`);
+      if (!res.ok) throw new Error("HTTP " + res.status);
       const data = await res.json();
 
-      if (!data || !data.jobUUID || !data.clientName) {
-        throw new Error("Invalid response");
-      }
+      if (!data || !data.type) throw new Error("Invalid response");
 
-      jobUUID = data.jobUUID;
-      docId = data.docId;
-      clientName = data.clientName;
-      termsContent = data.termsText || "";
-      signatureStatus = data.signatureStatus || null;
+      sessionType = data.type;
+      clientName = data.clientName || "";
 
-      if (signatureStatus === "done") {
-        modal.innerHTML = `
-          <div class="success-box">
-            <h2>Signature Already Captured</h2>
-            <p>Signature has already been captured. If you believe this is an error, please contact us.</p>
-          </div>
-        `;
+      if (data.signatureStatus === "done") {
+        showAlreadySigned();
         return;
       }
 
-      textBox.value = clientName.trim().split(" ")[0];
+      if (clientName) {
+        textBox.value = clientName.trim().split(" ")[0];
+      }
 
-      if (!docId) {
-        termsText.innerText = termsContent;
+      if (sessionType === "terms") {
+        termsText.innerText = data.termsText || "";
       } else {
         termsText.style.display = "none";
       }
-
     } catch (e) {
       apiError.style.display = "block";
       apiError.innerText = "Failed to load required data. Please try again later.";
@@ -331,9 +231,9 @@
 
   loadInitialData();
 
+  // keep the typed signature to a single first name (existing behaviour)
   textBox.addEventListener("input", () => {
     const value = textBox.value.trim();
-
     if (value.includes(" ")) {
       nameError.style.display = "block";
       textBox.value = value.split(" ")[0];
@@ -342,105 +242,106 @@
     }
   });
 
-  function typedSignatureToBase64(text) {
-    const scale = 4;
-    const padding = 24;
-    const height = 120;
-
-    const measureCanvas = document.createElement("canvas");
-    const measureCtx = measureCanvas.getContext("2d");
-    measureCtx.font = "38px 'Pacifico', cursive";
-
-    const textWidth = measureCtx.measureText(text).width;
-    const logicalWidth = Math.ceil(textWidth + padding * 2);
-
-    const tempCanvas = document.createElement("canvas");
-    tempCanvas.width = logicalWidth * scale;
-    tempCanvas.height = height * scale;
-
-    const tctx = tempCanvas.getContext("2d");
-    tctx.scale(scale, scale);
-    tctx.imageSmoothingEnabled = true;
-    tctx.imageSmoothingQuality = "high";
-
-    tctx.clearRect(0, 0, logicalWidth, height);
-    tctx.font = "38px 'Pacifico', cursive";
-    tctx.fillStyle = "#000";
-    tctx.textAlign = "left";
-    tctx.textBaseline = "middle";
-    tctx.fillText(text, padding, height / 2);
-
-    return tempCanvas.toDataURL("image/png");
-  }
-
   checkbox.addEventListener("change", () => {
-    if (checkbox.checked) {
-      checkboxError.style.display = "none";
-    }
+    if (checkbox.checked) checkboxError.style.display = "none";
   });
 
-  document.getElementById("acceptBtn").onclick = async () => {
-    if (!checkbox.checked) {
-      checkboxError.style.display = "block";
-      return;
-    }
+  cancelBtn.addEventListener("click", () => {
+    try { window.close(); } catch (e) {}
+  });
 
-    if (!drawMode && textBox.value.trim() === "") return;
-    if (!jobUUID) return;
+  // render the typed name to a PNG, only after the font is ready
+  async function typedSignatureToBase64(text) {
+    try { await document.fonts.load("38px 'Pacifico'"); await document.fonts.ready; } catch (e) {}
+
+    const scale = 4, padding = 24, height = 120;
+    const measure = document.createElement("canvas").getContext("2d");
+    measure.font = "38px 'Pacifico', cursive";
+    const textWidth = measure.measureText(text).width;
+    const logicalWidth = Math.ceil(textWidth + padding * 2);
+
+    const tmp = document.createElement("canvas");
+    tmp.width = logicalWidth * scale;
+    tmp.height = height * scale;
+    const t = tmp.getContext("2d");
+    t.scale(scale, scale);
+    t.imageSmoothingEnabled = true;
+    t.imageSmoothingQuality = "high";
+    t.clearRect(0, 0, logicalWidth, height);
+    t.font = "38px 'Pacifico', cursive";
+    t.fillStyle = "#000";
+    t.textAlign = "left";
+    t.textBaseline = "middle";
+    t.fillText(text, padding, height / 2);
+    return tmp.toDataURL("image/png");
+  }
+
+  function showSuccess() {
+    modal.innerHTML = `
+      <div class="success-box">
+        <h2>Signature Captured</h2>
+        <p>Your signature has been successfully recorded.</p>
+      </div>`;
+  }
+  function showAlreadySigned() {
+    modal.innerHTML = `
+      <div class="success-box">
+        <h2>Signature Already Captured</h2>
+        <p>This link has already been signed. If you believe this is an error, please contact us.</p>
+      </div>`;
+  }
+  function fail(message) {
+    apiError.style.display = "block";
+    apiError.innerText = message;
+    acceptBtn.disabled = false;
+    btnText.innerText = "Complete Signature";
+  }
+
+  acceptBtn.onclick = async () => {
+    apiError.style.display = "none";
+
+    if (!checkbox.checked) { checkboxError.style.display = "block"; return; }
+    if (drawMode && !hasDrawn) { fail("Please draw your signature before continuing."); return; }
+    if (!drawMode && textBox.value.trim() === "") { fail("Please enter your name before continuing."); return; }
+
+    const key = getKeyFromURL();
+    if (!key) { fail("Invalid or missing access key."); return; }
 
     acceptBtn.disabled = true;
     btnText.innerHTML = `<span class="spinner"></span> Processing...`;
 
-    const signatureBase64 = drawMode
-      ? canvas.toDataURL("image/png")
-      : typedSignatureToBase64(textBox.value.trim());
-
+    let signatureBase64;
     try {
-      const key = getKeyFromURL(); // Ensure key is available
+      signatureBase64 = drawMode
+        ? canvas.toDataURL("image/png")
+        : await typedSignatureToBase64(textBox.value.trim());
+    } catch (e) {
+      fail("Could not read the signature. Please try again.");
+      return;
+    }
 
-      if (docId) {
-        await fetch("https://docs-backend-gilt.vercel.app/api/auth-test", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ docId, jobUUID, signatureBase64, key, clientName })
-        });
+    // ---- single authoritative call ----
+    try {
+      const res = await fetch(`${API_BASE}/api/sign`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key, signature: signatureBase64 })
+      });
+
+      if (res.ok) { showSuccess(); return; }
+
+      let data = {};
+      try { data = await res.json(); } catch (e) {}
+
+      if (res.status === 409 && data.error === "already_signed") {
+        showAlreadySigned();
+      } else if (res.status === 409 && data.error === "in_progress") {
+        fail("This signature is already being processed. Please wait a moment and try again.");
       } else {
-        const termsNote = termsText.innerText.trim();
-        await fetch("https://note-fixed-final.vercel.app/api/signature", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ jobUUID, note: termsNote })
-        });
-
-        await fetch(
-          "https://attachment-backendddd-zie8.vercel.app/api/signature-upload",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ jobUUID, signature: signatureBase64 })
-          }
-        );
+        fail(data.message || "Signature submission failed. Please try again.");
       }
-
-      if (key) {
-        await fetch("https://database-psi-eight.vercel.app/api/get-terms", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ linkKey: key })
-        });
-      }
-
-      modal.innerHTML = `
-        <div class="success-box">
-          <h2>Signature Captured</h2>
-          <p>Your signature has been successfully recorded.</p>
-        </div>
-      `;
     } catch (error) {
-      apiError.style.display = "block";
-      apiError.innerText = "Signature submission failed. Please try again.";
-      acceptBtn.disabled = false;
-      btnText.innerText = "Complete Signature";
+      fail("Signature submission failed. Please try again.");
     }
   };
 </script>
