@@ -399,21 +399,21 @@
       const key = getKeyFromURL(); // Ensure key is available
 
       if (docId) {
-        await fetch("http://3.106.207.52/auth-test", {
+        await fetch("https://docs-backend-gilt.vercel.app/api/auth-test", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ docId, jobUUID, signatureBase64, key, clientName })
         });
       } else {
         const termsNote = termsText.innerText.trim();
-        await fetch("http://3.106.207.52/sendnote/sendNote", {
+        await fetch("https://note-fixed-final.vercel.app/api/signature", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ jobUUID, note: termsNote })
         });
 
         await fetch(
-          "http://3.106.207.52/signature",
+          "https://attachment-backendddd-zie8.vercel.app/api/signature-upload",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -423,7 +423,7 @@
       }
 
       if (key) {
-        await fetch("http://3.106.207.52/database/get-terms", {
+        await fetch("https://database-psi-eight.vercel.app/api/get-terms", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ linkKey: key })
